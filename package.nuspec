@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Our.Umbraco.Tuple</id>
+    <version>1.0.0</version>
+    <authors>Lee Kelleher, Matt Brailsford</authors>
+    <owners>Lee Kelleher, Matt Brailsford</owners>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/umco/umbraco-tuple</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/umco/umbraco-tuple/master/docs/img/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Tuple is a property editor for Umbraco 7.6+</description>
+    <releaseNotes>Setup VSTS build for Our.Umbraco.Tuple.</releaseNotes>
+    <copyright>Copyright &#169; 2018 UMCO, Our Umbraco and other contributors</copyright>
+    <tags>umbraco editor</tags>    
+  </metadata>
+  <files>
+    <file src="src\Our.Umbraco.Tuple\obj\Release\Our.Umbraco.Tuple.dll" target="lib" />
+    <file src="src\Our.Umbraco.Tuple\Web\UI\App_Plugins\**" target="content/App_Plugins" />
+  </files>
+</package>
