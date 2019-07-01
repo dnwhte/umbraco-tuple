@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Umbraco.Core;
 
 namespace Our.Umbraco.Tuple.Models
 {
+    public class TupleValueItems : List<TupleValueItem>
+    { }
+
     public class TupleValueItem
     {
         [JsonProperty("key")]

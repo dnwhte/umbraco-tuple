@@ -44,11 +44,31 @@ namespace Our.Umbraco.Tuple.ValueConverters
             if (innerPropertyTypes == null || innerPropertyTypes.Count == 0)
                 return base.ConvertDataToSource(propertyType, source, preview);
 
-            var model = JsonConvert.DeserializeObject<TupleValueItem[]>(data);
-            if (model == null && model.Length > 0)
+            var model = new TupleValueItems();
+
+            // Detect whether the value is in JSON or XML format
+            //
+            // NOTE: We can't be sure which format the data is in.
+            // With "nested property-editors", (e.g. Nested Content, Stacked Content),
+            // they don't convert the call `ConvertDbToXml`.
+            if (data.DetectIsJson())
+            {
+                model.AddRange(JsonConvert.DeserializeObject<TupleValueItems>(data));
+            }
+            else
+            {
+                // otherwise we assume it's XML
+                var elements = XElement.Parse(data);
+                if (elements != null && elements.HasElements)
+                {
+                    model.AddRange(elements.XPathSelectElements("value").Select(x => new TupleValueItem { Value = x.Value }));
+                }
+            }
+
+            if (model == null && model.Count == 0)
                 return base.ConvertDataToSource(propertyType, source, preview);
 
-            for (int i = 0; i < model.Length; i++)
+            for (int i = 0; i < model.Count; i++)
             {
                 var item = model[i];
                 var innerPropertyType = innerPropertyTypes[i];
@@ -64,15 +84,15 @@ namespace Our.Umbraco.Tuple.ValueConverters
 
         public override object ConvertSourceToObject(PublishedPropertyType propertyType, object source, bool preview)
         {
-            if (source is TupleValueItem[] model)
+            if (source is TupleValueItems model)
             {
                 var innerPropertyTypes = this.GetInnerPublishedPropertyTypes(propertyType);
                 if (innerPropertyTypes == null || innerPropertyTypes.Count == 0)
                     return base.ConvertSourceToObject(propertyType, source, preview);
 
-                var objects = new object[model.Length];
+                var objects = new object[model.Count];
 
-                for (int i = 0; i < model.Length; i++)
+                for (int i = 0; i < model.Count; i++)
                 {
                     var innerPropertyType = innerPropertyTypes[i];
                     var itemObject = innerPropertyType.ConvertSourceToObject(model[i].Value, preview);
@@ -90,15 +110,15 @@ namespace Our.Umbraco.Tuple.ValueConverters
 
         public override object ConvertSourceToXPath(PublishedPropertyType propertyType, object source, bool preview)
         {
-            if (source is TupleValueItem[] model)
+            if (source is TupleValueItems model)
             {
                 var innerPropertyTypes = this.GetInnerPublishedPropertyTypes(propertyType);
                 if (innerPropertyTypes == null || innerPropertyTypes.Count == 0)
                     return base.ConvertSourceToXPath(propertyType, source, preview);
 
-                var elements = new XElement[model.Length];
+                var elements = new XElement[model.Count];
 
-                for (int i = 0; i < model.Length; i++)
+                for (int i = 0; i < model.Count; i++)
                 {
                     var itemXPath = innerPropertyTypes[i].ConvertSourceToXPath(model[i].Value, preview);
 
@@ -133,7 +153,7 @@ namespace Our.Umbraco.Tuple.ValueConverters
                         foreach (var item in items)
                         {
                             var dtd = dataTypeService.GetDataTypeDefinitionById(item.DataTypeGuid);
-                            list.Add(new PublishedPropertyType(propertyType.ContentType, new PropertyType(dtd)));
+                            list.Add(new PublishedPropertyType(propertyType.ContentType, new PropertyType(dtd, propertyType.PropertyTypeAlias)));
                         }
                     }
                     return list;
