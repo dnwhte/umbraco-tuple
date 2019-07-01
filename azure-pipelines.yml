@@ -32,11 +32,12 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
-- task: NuGetCommand@2  
+- task: NuGetCommand@2
   inputs:
     command: 'pack'
     packagesToPack: 'package.nuspec'
-    versioningScheme: off
+    versioningScheme: 'byEnvVar'
+    versionEnvVar: 'BUILD_BUILDNUMBER'
 
 - task: PublishBuildArtifacts@1
   inputs:
