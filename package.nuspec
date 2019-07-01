@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Our.Umbraco.Tuple</id>
-    <version>1.0.0</version>
+    <version>1.0.0-custom</version>
     <authors>Lee Kelleher, Matt Brailsford</authors>
     <owners>Lee Kelleher, Matt Brailsford</owners>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
